@@ -1,15 +1,12 @@
 // ref :https://github.com/rlabrecque/Steamworks.NET-SteamManager
-#if !USE_STEAM || !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
 #define DISABLESTEAMWORKS
 #endif
 using System.Collections.Generic;
+using Steamworks;
 using UnityEngine;
 
-#if !DISABLESTEAMWORKS
-using Steamworks;
-#endif
-
-namespace MornSteam
+namespace MornLib
 {
     [DisallowMultipleComponent]
     public sealed class MornSteamManager : MonoBehaviour
@@ -30,7 +27,9 @@ namespace MornSteam
 
                 if (_instance == null)
                 {
-                    return new GameObject(nameof(MornSteamManager)).AddComponent<MornSteamManager>();
+                    _instance = new GameObject(nameof(MornSteamManager)).AddComponent<MornSteamManager>();
+                    _instance.transform.SetParent(null);
+                    DontDestroyOnLoad(_instance.gameObject);
                 }
 
                 return _instance;
@@ -52,26 +51,13 @@ namespace MornSteam
             _instance = null;
         }
 
-        private void Awake()
+        public static void Initialize()
         {
-            Initialize();
+            Instance.InitializeImpl();
         }
 
-        public void Initialize()
+        private void InitializeImpl()
         {
-            if (_instance != null)
-            {
-                if (_instance != this)
-                {
-                    Destroy(gameObject);
-                }
-
-                return;
-            }
-
-            _instance = this;
-            transform.SetParent(null);
-            DontDestroyOnLoad(gameObject);
             if (_everInitializeSucceed)
             {
                 Debug.Log("[Steamworks.NET] 初期化済みなのでスキップ");
@@ -156,13 +142,14 @@ namespace MornSteam
         }
 
         private static InputHandle_t[] _mInputHandles;
+
         public static List<string> GetInputs()
         {
             if (_mInputHandles == null)
             {
                 _mInputHandles = new InputHandle_t[Constants.STEAM_INPUT_MAX_COUNT];
             }
-            
+
             var result = new List<string>();
             SteamInput.GetConnectedControllers(_mInputHandles);
             foreach (var handle in _mInputHandles)
@@ -173,7 +160,7 @@ namespace MornSteam
                     result.Add(inputType.ToString());
                 }
             }
-            
+
             return result;
         }
 
@@ -192,7 +179,7 @@ namespace MornSteam
         {
             if (Initialized)
             {
-                if (SteamUserStats.RequestCurrentStats())
+                // if (SteamUserStats.RequestCurrentStats())
                 {
                     SteamUserStats.SetAchievement(label);
                     SteamUserStats.StoreStats();
@@ -204,12 +191,22 @@ namespace MornSteam
         {
             if (Initialized)
             {
-                if (SteamUserStats.RequestCurrentStats())
+                // if (SteamUserStats.RequestCurrentStats())
                 {
                     SteamUserStats.SetAchievement(label);
                     SteamUserStats.StoreStats();
                 }
             }
+        }
+
+        public static string GetCurrentGameLanguage()
+        {
+            if (Initialized)
+            {
+                return SteamApps.GetCurrentGameLanguage();
+            }
+
+            return MornSteamLanguageType.English;
         }
 #else
         public static bool Initialized => false;
@@ -229,6 +226,10 @@ namespace MornSteam
         }
         public static void SetStat(string label, int value)
         {
+        }
+        public static string GetCurrentGameLanguage()
+        {
+            return MornSteamLanguageType.English;
         }
 #endif
     }
