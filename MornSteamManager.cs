@@ -219,6 +219,12 @@ namespace MornLib
             var result = new List<string>();
             return result;
         }
+        public static void ResetStaticField()
+        {
+        }
+        public static void Initialize()
+        {
+        }
         public static bool TryGetAchievement(string label, out bool isUnlocked)
         {
             isUnlocked = false;
