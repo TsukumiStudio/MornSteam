@@ -1,0 +1,17 @@
+{
+  "name": "com.tsukumistudio.mornsteam",
+  "version": "1.0.0",
+  "displayName": "MornSteam",
+  "description": "Steamworks.NETを薄くラップしたUnity向けSteam APIライブラリ。実績・統計・入力・言語取得などをstaticメソッドで提供。",
+  "unity": "6000.0",
+  "license": "Unlicense",
+  "author": {
+    "name": "TsukumiStudio"
+  },
+  "keywords": [
+    "steam",
+    "steamworks",
+    "achievement",
+    "morn"
+  ]
+}
