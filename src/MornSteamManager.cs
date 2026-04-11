@@ -178,28 +178,26 @@ namespace MornLib
             return false;
         }
 
-        public static void SetAchievement(string label)
+        public static bool GetAchievement(string label, out bool isUnlocked) => TryGetAchievement(label, out isUnlocked);
+
+        public static bool SetAchievement(string label)
         {
-            if (Initialized)
-            {
-                // if (SteamUserStats.RequestCurrentStats())
-                {
-                    SteamUserStats.SetAchievement(label);
-                    SteamUserStats.StoreStats();
-                }
-            }
+            return Initialized && SteamUserStats.SetAchievement(label);
         }
 
-        public static void SetStat(string label, int value)
+        public static bool SetStat(string label, int value)
         {
-            if (Initialized)
-            {
-                // if (SteamUserStats.RequestCurrentStats())
-                {
-                    SteamUserStats.SetAchievement(label);
-                    SteamUserStats.StoreStats();
-                }
-            }
+            return Initialized && SteamUserStats.SetStat(label, value);
+        }
+
+        public static bool StoreStats()
+        {
+            return Initialized && SteamUserStats.StoreStats();
+        }
+
+        public static bool ResetAllStats(bool achievementsToo)
+        {
+            return Initialized && SteamUserStats.ResetAllStats(achievementsToo);
         }
 
         public static string GetCurrentGameLanguage()
@@ -230,12 +228,11 @@ namespace MornLib
             isUnlocked = false;
             return false;
         }
-        public static void SetAchievement(string label)
-        {
-        }
-        public static void SetStat(string label, int value)
-        {
-        }
+        public static bool GetAchievement(string label, out bool isUnlocked) => TryGetAchievement(label, out isUnlocked);
+        public static bool SetAchievement(string label) => false;
+        public static bool SetStat(string label, int value) => false;
+        public static bool StoreStats() => false;
+        public static bool ResetAllStats(bool achievementsToo) => false;
         public static string GetCurrentGameLanguage()
         {
             return MornSteamLanguageType.English;
