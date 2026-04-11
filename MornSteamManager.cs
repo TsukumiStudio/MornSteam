@@ -204,14 +204,6 @@ namespace MornLib
             }
         }
 
-        // Steamworks SDK 1.61 で SteamUserStats.RequestCurrentStats は削除された
-        // (Steamクライアントが起動時に自動的にステータスをロードするため)
-        // 互換性のためラッパーは残し、Initialized の状態を返すだけにする
-        public static bool RequestCurrentStats()
-        {
-            return Initialized;
-        }
-
         public static bool StoreStats()
         {
             return Initialized && SteamUserStats.StoreStats();
@@ -257,7 +249,6 @@ namespace MornLib
         public static void SetStat(string label, int value)
         {
         }
-        public static bool RequestCurrentStats() => false;
         public static bool StoreStats() => false;
         public static bool ResetAllStats(bool achievementsToo) => false;
         public static string GetCurrentGameLanguage()
