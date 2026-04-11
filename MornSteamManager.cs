@@ -178,6 +178,8 @@ namespace MornLib
             return false;
         }
 
+        public static bool GetAchievement(string label, out bool isUnlocked) => TryGetAchievement(label, out isUnlocked);
+
         public static void SetAchievement(string label)
         {
             if (Initialized)
@@ -196,10 +198,25 @@ namespace MornLib
             {
                 // if (SteamUserStats.RequestCurrentStats())
                 {
-                    SteamUserStats.SetAchievement(label);
+                    SteamUserStats.SetStat(label, value);
                     SteamUserStats.StoreStats();
                 }
             }
+        }
+
+        public static bool RequestCurrentStats()
+        {
+            return Initialized && SteamUserStats.RequestCurrentStats();
+        }
+
+        public static bool StoreStats()
+        {
+            return Initialized && SteamUserStats.StoreStats();
+        }
+
+        public static bool ResetAllStats(bool achievementsToo)
+        {
+            return Initialized && SteamUserStats.ResetAllStats(achievementsToo);
         }
 
         public static string GetCurrentGameLanguage()
@@ -230,12 +247,16 @@ namespace MornLib
             isUnlocked = false;
             return false;
         }
+        public static bool GetAchievement(string label, out bool isUnlocked) => TryGetAchievement(label, out isUnlocked);
         public static void SetAchievement(string label)
         {
         }
         public static void SetStat(string label, int value)
         {
         }
+        public static bool RequestCurrentStats() => false;
+        public static bool StoreStats() => false;
+        public static bool ResetAllStats(bool achievementsToo) => false;
         public static string GetCurrentGameLanguage()
         {
             return MornSteamLanguageType.English;
